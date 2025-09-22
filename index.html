@@ -9,13 +9,12 @@
       padding: 0;
       height: 100%;
       background: url('https://i.imgur.com/wJ9xXfF.png') no-repeat center center fixed;
-      background-size: cover; /* que cubra toda la pantalla */
+      background-size: cover;
       display: flex;
       justify-content: center;
-      align-items: flex-start; /* videos en la parte superior */
+      align-items: flex-start; /* parte superior */
       overflow: hidden;
     }
-
     video {
       width: 100%;
       max-height: 50vh; /* videos en la parte superior */
@@ -23,7 +22,6 @@
       opacity: 0;
       transition: opacity 1s ease-in-out; /* animación de entrada */
     }
-
     video.visible {
       opacity: 1;
     }
@@ -31,7 +29,6 @@
 </head>
 <body>
   <video id="videoPlayer" muted playsinline></video>
-
   <script>
     // Lista de videos
     const videos = ["video1.mp4", "video2.mp4", "video3.mp4", "video4.mp4", "video5.mp4"];
@@ -41,11 +38,11 @@
     function playVideo(index) {
       player.classList.remove("visible"); // ocultar antes de cambiar
       setTimeout(() => {
-        player.src = "MYVIDEOS/" + videos[index]; // carpeta MYVIDEOS
+        player.src = videos[index];
         player.load();
         player.play();
         player.classList.add("visible"); // animación de entrada
-      }, 200); 
+      }, 200);
     }
 
     // Cuando termina un video (8s), pasar al siguiente
