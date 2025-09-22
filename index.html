@@ -8,10 +8,11 @@
       margin: 0;
       padding: 0;
       height: 100%;
-      background: black;
+      background: url('https://i.imgur.com/wJ9xXfF.png') no-repeat center center fixed;
+      background-size: cover; /* que cubra toda la pantalla */
       display: flex;
       justify-content: center;
-      align-items: flex-start; /* parte superior */
+      align-items: flex-start; /* videos en la parte superior */
       overflow: hidden;
     }
 
@@ -40,7 +41,7 @@
     function playVideo(index) {
       player.classList.remove("visible"); // ocultar antes de cambiar
       setTimeout(() => {
-        player.src = videos[index];
+        player.src = "MYVIDEOS/" + videos[index]; // carpeta MYVIDEOS
         player.load();
         player.play();
         player.classList.add("visible"); // animación de entrada
