@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Secuencia de Videos</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: black;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start; /* parte superior */
+      overflow: hidden;
+    }
+
+    video {
+      width: 100%;
+      max-height: 50vh; /* videos en la parte superior */
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 1s ease-in-out; /* animación de entrada */
+    }
+
+    video.visible {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <video id="videoPlayer" muted playsinline></video>
+
+  <script>
+    // Lista de videos
+    const videos = ["video1.mp4", "video2.mp4", "video3.mp4", "video4.mp4", "video5.mp4"];
+    let currentVideo = 0;
+    const player = document.getElementById("videoPlayer");
+
+    function playVideo(index) {
+      player.classList.remove("visible"); // ocultar antes de cambiar
+      setTimeout(() => {
+        player.src = videos[index];
+        player.load();
+        player.play();
+        player.classList.add("visible"); // animación de entrada
+      }, 200); 
+    }
+
+    // Cuando termina un video (8s), pasar al siguiente
+    player.addEventListener("loadeddata", () => {
+      setTimeout(() => {
+        currentVideo = (currentVideo + 1) % videos.length;
+        playVideo(currentVideo);
+      }, 8000); // cada video dura 8 segundos
+    });
+
+    // Iniciar con el primer video
+    playVideo(currentVideo);
+  </script>
+</body>
+</html>
