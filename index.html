@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <title>Secuencia de Videos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body, html {
       margin: 0;
@@ -12,48 +15,118 @@
       background-size: cover;
       display: flex;
       justify-content: center;
-      align-items: flex-start; /* parte superior */
+      align-items: flex-start; /* Alinear el contenedor del video arriba */
       overflow: hidden;
     }
+
+    /* === AGREGADO: Contenedor para video y botón === */
+    #videoContainer {
+      position: relative; /* Base para el posicionamiento absoluto del botón */
+      width: 100%;
+      max-height: 50vh;
+      display: flex; /* Para asegurar que el video dentro se comporte bien */
+    }
+
     video {
       width: 100%;
-      max-height: 50vh; /* videos en la parte superior */
+      max-height: 50vh;
       object-fit: cover;
       opacity: 0;
-      transition: opacity 1s ease-in-out; /* animación de entrada */
+      transition: opacity 1s ease-in-out;
     }
     video.visible {
       opacity: 1;
     }
+    
+    #nextBtn {
+      /* === INICIO DE CAMBIOS EN EL BOTÓN === */
+      position: absolute; /* Posición relativa al #videoContainer */
+      left: 20px;
+      bottom: 20px;
+      z-index: 10; /* Asegura que esté sobre el video */
+
+      font-family: 'Poppins', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      color: white;
+      /* Color solicitado */
+      background: linear-gradient(180deg, #ff6f48 0%, #f4436f 100%);
+      border: none;
+      padding: 12px 28px;
+      border-radius: 50px;
+      cursor: pointer;
+      /* Sombra más sutil para el nuevo estilo */
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      transition: all 0.2s ease-in-out;
+      /* === FIN DE CAMBIOS EN EL BOTÓN === */
+    }
+
+    #nextBtn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    }
+    
+    /* === AGREGADO: Clase y Keyframes para la animación === */
+    .animate {
+       animation: rubberBand 1s;
+    }
+
+    @keyframes rubberBand {
+      0% { transform: scale3d(1, 1, 1); }
+      30% { transform: scale3d(1.25, 0.75, 1); }
+      40% { transform: scale3d(0.75, 1.25, 1); }
+      50% { transform: scale3d(1.15, 0.85, 1); }
+      65% { transform: scale3d(0.95, 1.05, 1); }
+      75% { transform: scale3d(1.05, 0.95, 1); }
+      100% { transform: scale3d(1, 1, 1); }
+    }
   </style>
 </head>
 <body>
-  <video id="videoPlayer" muted playsinline></video>
+
+  <div id="videoContainer">
+    <video id="videoPlayer" muted playsinline></video>
+    <button id="nextBtn">siguiente</button>
+  </div>
+  
   <script>
-    // Lista de videos
     const videos = ["video1.mp4", "video2.mp4", "video3.mp4", "video4.mp4", "video5.mp4"];
     let currentVideo = 0;
     const player = document.getElementById("videoPlayer");
+    const nextButton = document.getElementById("nextBtn");
+    let videoTimeout;
 
     function playVideo(index) {
-      player.classList.remove("visible"); // ocultar antes de cambiar
+      player.classList.remove("visible");
       setTimeout(() => {
         player.src = videos[index];
         player.load();
         player.play();
-        player.classList.add("visible"); // animación de entrada
+        player.classList.add("visible");
       }, 200);
     }
 
-    // Cuando termina un video (8s), pasar al siguiente
+    function advanceToNext() {
+      clearTimeout(videoTimeout); 
+      currentVideo = (currentVideo + 1) % videos.length;
+      playVideo(currentVideo);
+      
+      // === AGREGADO: Disparar la animación en el botón ===
+      nextButton.classList.add('animate');
+    }
+
     player.addEventListener("loadeddata", () => {
-      setTimeout(() => {
-        currentVideo = (currentVideo + 1) % videos.length;
-        playVideo(currentVideo);
-      }, 8000); // cada video dura 8 segundos
+      clearTimeout(videoTimeout);
+      videoTimeout = setTimeout(advanceToNext, 8000);
+    });
+    
+    nextButton.addEventListener("click", advanceToNext);
+
+    // === AGREGADO: Limpiar la clase de animación para que pueda repetirse ===
+    nextButton.addEventListener('animationend', () => {
+      nextButton.classList.remove('animate');
     });
 
-    // Iniciar con el primer video
     playVideo(currentVideo);
   </script>
 </body>
