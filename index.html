@@ -30,21 +30,64 @@
       width: 100%;
       max-height: 50vh;
       object-fit: cover;
-      opacity: 1; /* Siempre visible */
-      transition: none; /* Sin animaciones */
+      opacity: 1;
+      transition: none;
+    }
+
+    /* Contenedor transparente para la flecha */
+    #swipeHintContainer {
+      position: absolute;
+      right: 18px;
+      bottom: 10px;
+      z-index: 10;
+      padding: 6px 10px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Flecha animada */
+    #swipeHint {
+      font-size: 24px;
+      color: white;
+      transform: rotate(180deg); /* Flecha hacia la izquierda */
+      opacity: 0.8;
+      animation: swipeLeft 1.5s infinite;
+    }
+
+    @keyframes swipeLeft {
+      0% {
+        transform: rotate(180deg) translateX(0);
+        opacity: 0.3;
+      }
+      50% {
+        transform: rotate(180deg) translateX(-10px);
+        opacity: 1;
+      }
+      100% {
+        transform: rotate(180deg) translateX(0);
+        opacity: 0.3;
+      }
     }
   </style>
 </head>
 <body>
   <div id="videoContainer">
     <video id="videoPlayer" muted playsinline></video>
+    <div id="swipeHintContainer">
+      <div id="swipeHint">➔</div>
+    </div>
   </div>
-  
+
   <script>
     const videos = ["video1.mp4", "video2.mp4", "video3.mp4", "video4.mp4", "video5.mp4"];
     let currentVideo = 0;
     const player = document.getElementById("videoPlayer");
+    const swipeHintContainer = document.getElementById("swipeHintContainer");
     let videoTimeout;
+    let hasSwiped = false;
 
     function playVideo(index) {
       player.src = videos[index];
@@ -80,8 +123,13 @@
     player.addEventListener("touchend", (e) => {
       endX = e.changedTouches[0].clientX;
       const diff = endX - startX;
-      
+
       if (Math.abs(diff) > 50) {
+        if (!hasSwiped) {
+          hasSwiped = true;
+          swipeHintContainer.style.display = "none"; // Ocultar la flecha tras el primer swipe
+        }
+
         if (diff < 0) {
           advanceToNext(); // Swipe izquierda
         } else {
